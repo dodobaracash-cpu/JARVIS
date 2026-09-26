@@ -16,10 +16,11 @@ export class AnthropicProvider implements LlmProvider {
   }
 
   async chat(req: ChatRequest): Promise<string> {
+    // claude-sonnet-5 has deprecated `temperature`; omit it rather than send a
+    // value the API will reject.
     const response = await this.client.messages.create({
       model: this.model,
       max_tokens: req.maxTokens ?? 1024,
-      temperature: req.temperature ?? 0.7,
       system: req.system,
       messages: req.messages,
     });
@@ -36,7 +37,6 @@ export class AnthropicProvider implements LlmProvider {
     const response = await this.client.messages.create({
       model: this.model,
       max_tokens: req.maxTokens ?? 2048,
-      temperature: req.temperature ?? 0,
       system: req.system,
       messages: req.messages,
       tools: [
